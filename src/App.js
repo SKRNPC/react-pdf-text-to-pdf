@@ -1,25 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { RenderedPDFViewer } from "./RenderedPDFViewer";
+import { saveAs } from "file-saver";
 
-function App() {
+const App = () => {
+  const [text, setText] = useState("");
+
+  const handleDownload = async () => {
+    const { renderPDF } = await import("./renderPDF");
+    const blob = await renderPDF({ text });
+    saveAs(blob, "test.pdf");
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <input value={text} onChange={(e) => setText(e.target.value)} />
+      <button onClick={handleDownload}>Download</button>
+      <RenderedPDFViewer
+        style={{ backgroundColor: "grey", width: "500px", height: "760px" }}
+        text={text}
+      />
     </div>
   );
-}
+};
 
 export default App;
